@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="board">
+	
+	<!-- 해당 게시판의 해당 페이지의 모든 글을 출력 -->
+	<select id="getBoardPagingList" parameterType="Map" resultType="BoardVO">
+	<![CDATA[
+		SELECT X.*
+		FROM (
+		    SELECT ROWNUM AS rnum, A.*
+		    FROM (
+		        SELECT LEVEL, BOARD.*
+		        FROM BOARD 
+		        WHERE BOARD_TBOARD_SEQ = #{board_tboard_seq} 
+		        START WITH BOARD_P_SEQ IS NULL 
+		        CONNECT BY PRIOR BOARD_SEQ = BOARD_P_SEQ
+		        ORDER siblings BY BOARD_REG_DT DESC) A
+		        WHERE ROWNUM <= #{pageNum}*10) X
+		WHERE X.rnum >= (#{pageNum}-1)*10 + 1
+	]]>
+	</select>
+
+	<!-- 해당 게시판의 글 수를 가져옴 -->
+	<select id="getBoardListCount" parameterType="String" resultType="int">
+		SELECT COUNT(*)
+		FROM BOARD
+		WHERE BOARD_TBOARD_SEQ = #{board_tboard_seq}
+	</select>
+
+	<!-- 기본 게시글 입력 -->
+	<insert id="insertBoard" parameterType="BoardVO">
+		INSERT INTO BOARD
+		    (
+		        BOARD_SEQ, BOARD_TBOARD_SEQ,
+		        BOARD_GROUP_SEQ, BOARD_TITLE, BOARD_CONTENT,
+		        BOARD_REG_DT, BOARD_MEM_ID
+		    )
+		VALUES
+		    (
+		        BOARD_SEQ.NEXTVAL, #{board_tboard_seq},
+		        BOARD_SEQ.CURRVAL, #{board_title}, #{board_content},
+		        SYSDATE, #{board_mem_id}
+		    )
+		<selectKey keyProperty="board_seq" resultType="String" order="AFTER">
+    		SELECT BOARD_SEQ.CURRVAL FROM DUAL
+  		</selectKey>
+	</insert>
+	
+	<!-- 계층형 게시글 입력 -->
+	<insert id="insertBoardP" parameterType="BoardVO">
+		INSERT INTO BOARD
+		    (
+		        BOARD_SEQ, BOARD_P_SEQ, BOARD_TBOARD_SEQ,
+		        BOARD_GROUP_SEQ, BOARD_TITLE, BOARD_CONTENT,
+		        BOARD_REG_DT, BOARD_MEM_ID
+		    )
+		VALUES
+		    (
+		        BOARD_SEQ.NEXTVAL, #{board_p_seq}, #{board_tboard_seq},
+		        #{board_group_seq}, #{board_title}, #{board_content},
+		        SYSDATE, #{board_mem_id}
+		    )
+	    <selectKey keyProperty="board_seq" resultType="String" order="AFTER">
+    		SELECT BOARD_SEQ.CURRVAL FROM DUAL
+  		</selectKey>
+	</insert>
+	
+	<!-- 게시글의 모든정보조회(게시글번호이용) -->
+	<select id="getBoardInfo" parameterType="String" resultType="BoardVO">
+		SELECT *
+		FROM BOARD
+		WHERE BOARD_SEQ = #{board_seq}
+	</select>
+	
+	<!-- 게시글 삭제하기(board_del_yn 수정) -->
+	<update id="updateBoard_del_yn" parameterType="String">
+		UPDATE BOARD
+		SET BOARD_DEL_YN = 'N'
+		WHERE BOARD_SEQ = #{board_seq}
+	</update>
+	
+	<!-- 게시글 수정하기 -->
+	<update id="updateBoard" parameterType="BoardVO">
+		UPDATE BOARD
+		SET BOARD_TITLE = #{board_title}, BOARD_CONTENT = #{board_content}
+		WHERE BOARD_SEQ = #{board_seq}
+	</update>
+</mapper>

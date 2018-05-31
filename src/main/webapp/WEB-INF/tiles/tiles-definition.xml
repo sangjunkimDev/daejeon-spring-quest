@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="basic.layout" template="/WEB-INF/views/layout/layout.jsp">
+		<put-attribute name="title" value="" />
+		<put-attribute name="header" value="/WEB-INF/views/layout/header.jsp" />
+		<put-attribute name="menu" value="/WEB-INF/views/layout/leftNav.jsp" />
+		<put-attribute name="body" value="" />
+		<put-attribute name="footer" value="" />
+	</definition>
+	
+	<definition name="tboardList" extends="basic.layout">
+		<put-attribute name="title" value="tboardList page"/>
+		<put-attribute name="body" value="/WEB-INF/views/tboard/tboardList.jsp"/>
+	</definition>
+	
+	<definition name="tboardinsertpage" extends="basic.layout">
+		<put-attribute name="title" value="tboardinsert page"/>
+		<put-attribute name="body" value="/WEB-INF/views/tboard/tboardInsert.jsp"/>
+	</definition>
+	
+	<definition name="boardList" extends="basic.layout">
+		<put-attribute name="title" value="boardList page"/>
+		<put-attribute name="body" value="/WEB-INF/views/board/boardList.jsp"/>
+	</definition>
+	
+	<definition name="boardInfo" extends="basic.layout">
+		<put-attribute name="title" value="boardInfo page"/>
+		<put-attribute name="body" value="/WEB-INF/views/board/boardInfo.jsp"/>
+	</definition>
+	
+	<definition name="boardInsertPage" extends="basic.layout">
+		<put-attribute name="title" value="boardInsert page"/>
+		<put-attribute name="body" value="/WEB-INF/views/board/boardInsert.jsp"/>
+	</definition>
+	
+	<definition name="boardUpdatePage" extends="basic.layout">
+		<put-attribute name="title" value="boardUpdate page"/>
+		<put-attribute name="body" value="/WEB-INF/views/board/boardUpdate.jsp"/>
+	</definition>
+	
+	
+	
+	
+	
+</tiles-definitions>
